@@ -84,3 +84,14 @@ Inicie o servidor
   node app.js
 ```
 
+## 🩷 Equipe
+
+Integrantes do projeto ShareHeart:
+
+- Everton Barbosa
+- Guilherme Willam
+- José Neto
+- Kevinny Weslley
+- Maria Heloysa
+- Sophia Alencar
+
