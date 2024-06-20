@@ -118,24 +118,28 @@ donorRoutes.route('/donor/:id').get(function (req, res) {
 });
 
 // api to update route
-donorRoutes.route('/update/:id').put(function (req, res) {
-    Donor.findById(req.params.id, function(err, donor) {
-    if (!donor){
-      res.status(400).send({'status': 'failure','mssg': 'Unable to find data'});
-    } else {
-        donor.name = req.body.name;
-        donor.email = req.body.email;
-        donor.phone_number = req.body.phone_number;
-        donor.password = req.body.password;
-        donor.cpf = req.body.cpf;
-        donor.picture = req.body.picture;
-        donor.birth_date = req.body.birth_date;
-
-        donor.save().then(business => {
-          res.status(200).json({'status': 'success','mssg': 'Update complete'});
-      })
+donorRoutes.route('/update/:id').put(async function (req, res) {
+  try {
+    const donor = await Donor.findById(req.params.id);
+    if (!donor) {
+      return res.status(400).json({ 'status': 'failure', 'mssg': 'Unable to find data' });
     }
-  });
+
+    // Verificar quais campos estão presentes no corpo da solicitação antes de atualizá-los
+    if (req.body.name) donor.name = req.body.name;
+    if (req.body.email) donor.email = req.body.email;
+    if (req.body.phone_number) donor.phone_number = req.body.phone_number;
+    if (req.body.password) donor.password = req.body.password;
+    if (req.body.cpf) donor.cpf = req.body.cpf;
+    if (req.body.picture) donor.picture = req.body.picture;
+    if (req.body.birth_date) donor.birth_date = req.body.birth_date;
+
+    await donor.save();
+    return res.status(200).json({ 'status': 'success', 'mssg': 'Update complete' });
+  } catch (err) {
+    console.error('Erro ao atualizar o doador:', err);
+    return res.status(500).json({ 'status': 'failure', 'mssg': 'Internal server error', 'error': err.message });
+  }
 });
 
 // api for delete
